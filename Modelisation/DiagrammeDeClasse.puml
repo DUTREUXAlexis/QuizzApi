@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Class Theme
+{
+    - id : int
+    - libelle : string
+    - description : string
+}
+
+Class Question
+{
+    - id : int
+    - libelle : string
+    - reponse : array
+    - reponseJuste : string
+}
+
+
+
+Theme "1..1" -- "1..*" Question
+
+
+@enduml
