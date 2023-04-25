@@ -2,30 +2,31 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Question;
-use App\Entity\Theme;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use http\QueryString;
 
-class QuestionFixtures extends Fixture
+class QuestionFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
         $faker = Factory::create("fr_FR");
-        for($i = 0; $i < 2000;$i++)
-        {
-            $Question = new Question();
-            $Question->setText($faker->sentence);
-            $Question->setReponseJuste($faker->word);
-            $Question->setReponse(['R1','R2','R3']);
-            $Question->setIdtheme($this->getReference('Theme :'.$faker->randomDigit()));
-            $this->getReference('Theme :'.$i);
-            $manager->persist($Question);
+        for($i = 1; $i < 100; $i++){
+            $question = new \App\Entity\Question();
+            $question->setTheme($this->getReference("theme".$faker->numberBetween(1,9)))
+                ->setTexte($faker->paragraph(1)." ?")
+                ->setReponses(["réponse 1","réponse 2","réponse 3","réponse 4"])
+                ->setReponseJuste("réponse 1");
+            $manager->persist($question);
         }
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return[
+            Theme::class
+        ];
     }
 }

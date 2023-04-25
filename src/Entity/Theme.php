@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\ThemeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -15,24 +14,18 @@ class Theme
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['List_Themes','Detail_Theme'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['List_Themes','Detail_Theme'])]
-    private ?string $libelle = null;
+    #[Groups("theme")]
+    private ?string $Titre = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['Detail_Theme'])]
-    private ?string $description = null;
-
-    #[ORM\OneToMany(mappedBy: 'idtheme', targetEntity: Question::class)]
-    #[Groups(['list_questions'])]
-    private Collection $Questions;
+    #[ORM\OneToMany(mappedBy: 'theme', targetEntity: Question::class)]
+    private Collection $questions;
 
     public function __construct()
     {
-        $this->Questions = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -40,26 +33,14 @@ class Theme
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function getTitre(): ?string
     {
-        return $this->libelle;
+        return $this->Titre;
     }
 
-    public function setLibelle(string $libelle): self
+    public function setTitre(string $Titre): self
     {
-        $this->libelle = $libelle;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
+        $this->Titre = $Titre;
 
         return $this;
     }
@@ -69,14 +50,14 @@ class Theme
      */
     public function getQuestions(): Collection
     {
-        return $this->Questions;
+        return $this->questions;
     }
 
     public function addQuestion(Question $question): self
     {
-        if (!$this->Questions->contains($question)) {
-            $this->Questions->add($question);
-            $question->setIdtheme($this);
+        if (!$this->questions->contains($question)) {
+            $this->questions->add($question);
+            $question->setTheme($this);
         }
 
         return $this;
@@ -84,10 +65,10 @@ class Theme
 
     public function removeQuestion(Question $question): self
     {
-        if ($this->Questions->removeElement($question)) {
+        if ($this->questions->removeElement($question)) {
             // set the owning side to null (unless already changed)
-            if ($question->getIdtheme() === $this) {
-                $question->setIdtheme(null);
+            if ($question->getTheme() === $this) {
+                $question->setTheme(null);
             }
         }
 

@@ -7,6 +7,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
+
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 class Question
 {
@@ -15,59 +17,47 @@ class Question
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Questions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Theme $idtheme = null;
-
     #[ORM\Column(length: 255)]
-    #[Groups(['list_questions'])]
-    private ?string $text = null;
+    #[Groups("questions")]
+    private ?string $texte = null;
 
     #[ORM\Column(type: Types::ARRAY)]
-    #[Groups(['list_questions'])]
-    private array $reponse = [];
+    #[Groups("questions")]
+    private array $reponses = [];
 
     #[ORM\Column(length: 255)]
-    #[Groups(['list_questions'])]
+    #[Groups("questions")]
     private ?string $reponseJuste = null;
+
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?theme $theme = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdtheme(): ?Theme
+    public function getTexte(): ?string
     {
-        return $this->idtheme;
+        return $this->texte;
     }
 
-    public function setIdtheme(?Theme $idtheme): self
+    public function setTexte(string $texte): self
     {
-        $this->idtheme = $idtheme;
+        $this->texte = $texte;
 
         return $this;
     }
 
-    public function getText(): ?string
+    public function getReponses(): array
     {
-        return $this->text;
+        return $this->reponses;
     }
 
-    public function setText(string $text): self
+    public function setReponses(array $reponses): self
     {
-        $this->text = $text;
-
-        return $this;
-    }
-
-    public function getReponse(): array
-    {
-        return $this->reponse;
-    }
-
-    public function setReponse(array $reponse): self
-    {
-        $this->reponse = $reponse;
+        $this->reponses = $reponses;
 
         return $this;
     }
@@ -80,6 +70,18 @@ class Question
     public function setReponseJuste(string $reponseJuste): self
     {
         $this->reponseJuste = $reponseJuste;
+
+        return $this;
+    }
+
+    public function getTheme(): ?theme
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(?theme $theme): self
+    {
+        $this->theme = $theme;
 
         return $this;
     }
